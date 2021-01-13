@@ -1,18 +1,1 @@
-[
-  {
-    "name": "Kutyát sétáltatni",
-    "status": true
-  },
-  {
-    "name": "Megcsinálni a leckét",
-    "status": true
-  },
-  {
-    "name": "Tejet venni",
-    "status": true
-  },
-  {
-    "name": "Megetetni a papagájt",
-    "status": false
-  }
-]
+[]

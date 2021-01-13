@@ -1,84 +1,65 @@
- 'use strict'
- import minimist from 'minimist';
- import fs, { readFileSync } from 'fs';
- import {instructionMessage} from './get-messages.js';
- import {readFile, getList, addNewItem, deleteItem, checkStatus} from './functions.js';
+import ToDos from "./Todos.js";
+import {
+  instructionMessage,
+  wrongArg,
+  argA,
+  withoutIndex,
+  NotANumber,
+  indexOutOfBound,
+  noMoreTodos,
+} from "./get-messages.js";
+import minimist from "minimist";
 
- const args = minimist(process.argv.slice(2));
 
-let temp = readFile();
+const args = minimist(process.argv.slice(2));
 
-
-
-
- if (args._.length > 0|| !Object.keys(args).every(arg => ['_','l', 'a', 'r', 'c'].includes(arg))) {
-     console.log('\nNem támogatott argumentum! \n');
-     instructionMessage();
-     
-
-     
- }
- if (Object.keys(args).length === 0 ){
-
-    instructionMessage();
-    }
-   
-
- if(args.l){
-    
-     if(temp.length > 0){
-         getList();
-        }else{
-            console.log('Nincs mára tennivalód! :)');
-        }
-    }
-
- else if (args.a){
-     if (args.a.length === undefined){
-        console.log('Nem lehetéges új feladat hozzáadása:\nnincs megadva a feladat!');
-     }else{
-    addNewItem(args.a);
-     }
-    
- }
- 
-    
- else if(args.r){
-    if (typeof args.r === 'number'){
-     
-        deleteItem(args.r);
-    } 
-    else if( number > temp.length){
-        console.log('Nem lehetséges az eltávolítás: túlindexelési probléma adódott');
-    }
-  else if (args.r.length === undefined){
-     console.log('Nem lehetséges az eltávolítás, nem adott meg indexet!');
-
- }
- else if (typeof args.r === 'string'){
-     console.log('Nem lehetséges az eltávolítás: a megadott index nem szám!');
- }
+if (
+  args._.length > 0 ||
+  !Object.keys(args).every((arg) => ["_", "l", "a", "r", "c"].includes(arg))
+) {
+  wrongArg();
+  instructionMessage();
+} else if (Object.keys(args).length === 1) {
+  instructionMessage();
 }
-
-
-else if(args.c){
-    if(typeof args.c === 'number'){
-        checkStatus(args.c);
-    }
-    else if(number > temp.length){
-        console.log('Nem lehetséges a feladat végrehajtása: túlindexelési probléma adódott');
-    }
- else if (args.c.length === undefined){
-     console.log('Nem lehetséges a feladat végrehajtása: nem adtál meg indexet');
- }
- 
- else if(typeof args.c === 'string'){
-     console.log('Nem lehetséges a feladat végrehajtása: a megadott index nem szám.');
- }
- 
+const todoList = new ToDos();
+let readFile = todoList.getFile();
+try{
+if (args.l) {
+  if (readFile.length === 0) {
+    noMoreTodos();
+  } else {
+    todoList.checkStatus();
+  }
 }
-
-
-
-
-
+if (args.a) {
+  if (args.a === true || args.a !== "_") {
+    argA();
+  } else {
+    todoList.addToList(todoList.length + 1, `${args.a}`);
+  }
+} else if (args.r) {
+  if (args.r === true) {
+    withoutIndex('eltávolítás');
+  } else if (typeof args.r != "number") {
+    NotANumber('eltávolítás');
+  } else if (args.r > readFile.length) {
+    indexOutOfBound('eltávolítás');
+  } else {
+    todoList.delete(args.r);
+  }
+} else if (args.c) {
+  if (args.c === true) {
+    withoutIndex('végrehajtás');
+  } else if (typeof args.c != "number") {
+    NotANumber('végrehajtás');
+  } else if (args.c > readFile.length) {
+    indexOutOfBound('végrehajtás');
+  } else {
+    todoList.setStatus(args.c);
+  }
+}
+}
+catch(err){
+  console.error(err);
+}
