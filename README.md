@@ -1,2 +1,2 @@
 # github_EnikoSstyn_todo_app
-
+Not a good solution, but it's work (hopefully :D), need to refactoring...
